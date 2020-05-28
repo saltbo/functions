@@ -8,19 +8,16 @@ import (
 	"github.com/otiai10/gosseract/v2"
 )
 
-var sseract *gosseract.Client
-
-func init() {
-	sseract = gosseract.NewClient()
-}
-
 func DetectNumber(c *gin.Context) {
-	imageTxt := c.PostForm("image")
+	imageTxt := c.PostForm("src")
 	imgData, err := base64.StdEncoding.DecodeString(imageTxt)
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
+
+	sseract := gosseract.NewClient()
+	defer sseract.Close()
 
 	if err := sseract.SetImageFromBytes(imgData); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
@@ -33,6 +30,7 @@ func DetectNumber(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"text": text,
+		"status": 200,
+		"msg":    text,
 	})
 }
