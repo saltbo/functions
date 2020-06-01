@@ -1,18 +1,13 @@
 FROM golang:1.13  AS build-env
 
 RUN echo \
-    deb http://mirrors.aliyun.com/debian/ stretch main non-free contrib\
-    deb-src http://mirrors.aliyun.com/debian/ stretch main non-free contrib\
-    deb http://mirrors.aliyun.com/debian-security stretch/updates main\
-    deb-src http://mirrors.aliyun.com/debian-security stretch/updates main\
-    deb http://mirrors.aliyun.com/debian/ stretch-updates main non-free contrib\
-    deb-src http://mirrors.aliyun.com/debian/ stretch-updates main non-free contrib\
-    deb http://mirrors.aliyun.com/debian/ stretch-backports main non-free contrib\
-    deb-src http://mirrors.aliyun.com/debian/ stretch-backports main non-free contrib\
+    deb http://mirrors.aliyun.com/debian buster main \
+    deb http://mirrors.aliyun.com/debian buster-updates main \
+    deb http://mirrors.aliyun.com/debian-security buster/updates main \
     > /etc/apt/sources.list
 
 RUN apt-get update \
-    && apt-get install -y libleptonica-dev libtesseract-dev tesseract-ocr
+    && apt-get install -y libtesseract-dev
 
 ENV APP_HOME /app
 WORKDIR $APP_HOME
@@ -22,24 +17,19 @@ COPY go.* $APP_HOME/
 RUN go mod download
 
 COPY . .
-RUN go get -t github.com/otiai10/gosseract && go build -v -o server cmd/server.go
+RUN go build -v -o server cmd/server.go
 
 # Runing environment
-FROM debian:9
+FROM debian:10
 
 RUN echo \
-    deb http://mirrors.aliyun.com/debian/ stretch main non-free contrib\
-    deb-src http://mirrors.aliyun.com/debian/ stretch main non-free contrib\
-    deb http://mirrors.aliyun.com/debian-security stretch/updates main\
-    deb-src http://mirrors.aliyun.com/debian-security stretch/updates main\
-    deb http://mirrors.aliyun.com/debian/ stretch-updates main non-free contrib\
-    deb-src http://mirrors.aliyun.com/debian/ stretch-updates main non-free contrib\
-    deb http://mirrors.aliyun.com/debian/ stretch-backports main non-free contrib\
-    deb-src http://mirrors.aliyun.com/debian/ stretch-backports main non-free contrib\
+    deb http://mirrors.aliyun.com/debian buster main \
+    deb http://mirrors.aliyun.com/debian buster-updates main \
+    deb http://mirrors.aliyun.com/debian-security buster/updates main \
     > /etc/apt/sources.list
 
 RUN apt-get update \
-    && apt-get install -y telnet libtesseract3 tesseract-ocr-eng
+    && apt-get install -y telnet libtesseract4 tesseract-ocr-eng
 
 ENV APP_HOME /app
 WORKDIR $APP_HOME
