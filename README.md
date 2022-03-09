@@ -1,3 +1,3 @@
-# funcs
+# functions
 
-Some functions
+Some functions drive by faas
