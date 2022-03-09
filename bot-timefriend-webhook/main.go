@@ -81,6 +81,7 @@ func APIGatewayEventHandler(ctx context.Context, request events.APIGatewayProxyR
 }
 
 func main() {
+	fmt.Println(time.Now())
 	// 默认使用Lambda驱动，也可以换成其他的
 	lambda.Start(APIGatewayEventHandler)
 }
