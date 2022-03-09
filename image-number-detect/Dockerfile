@@ -16,7 +16,7 @@ ENV GOPROXY=https://goproxy.cn,direct
 COPY go.* $APP_HOME/
 RUN go mod download
 
-COPY . .
+COPY .. .
 RUN go build -v -o server cmd/server.go
 
 # Runing environment

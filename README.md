@@ -1,2 +1,3 @@
-# gofc
-Some function base on golang
+# funcs
+
+Some functions
