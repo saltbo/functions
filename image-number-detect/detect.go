@@ -1,41 +1,23 @@
 package main
 
 import (
-	"net/http"
+	"encoding/base64"
 
-	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/otiai10/gosseract/v2"
 )
 
-func main() {
-	lambda.Start(Handler)
-}
+func detect(base64Image string) (string, error) {
+	imgData, err := base64.StdEncoding.DecodeString(base64Image)
+	if err != nil {
+		return "", err
+	}
 
-func Handler(w http.ResponseWriter, r *http.Request) {
-	// imageTxt := r.PostFormValue("src")
-	// imgData, err := base64.StdEncoding.DecodeString(imageTxt)
-	// if err != nil {
-	// 	c.AbortWithError(http.StatusBadRequest, err)
-	// 	return
-	// }
+	sseract := gosseract.NewClient()
+	defer sseract.Close()
 
-	// sseract := gosseract.NewClient()
-	// defer sseract.Close()
-	//
-	// if err := sseract.SetImageFromBytes(imgData); err != nil {
-	// 	c.AbortWithError(http.StatusBadRequest, err)
-	// 	return
-	// }
-	//
-	// text, err := sseract.Text()
-	// if err != nil {
-	// 	c.AbortWithError(http.StatusInternalServerError, err)
-	// }
-	//
-	// c.JSON(http.StatusOK, gin.H{
-	// 	"status": 200,
-	// 	"msg":    text,
-	// })
+	if err := sseract.SetImageFromBytes(imgData); err != nil {
+		return "", err
+	}
 
-	msg := "Hello, world!\n"
-	w.Write([]byte(msg))
+	return sseract.Text()
 }
